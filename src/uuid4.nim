@@ -35,6 +35,7 @@ type
     ApolloNcs, Rfc4122, ReservedMicrosoft, ReservedFuture
 
 proc uuid4*(): Uuid =
+  ## Generate a version-4 (random) UUID.
   let success = urandom(dest = result.bytes)
   if success:
     # set version to 4
@@ -43,6 +44,7 @@ proc uuid4*(): Uuid =
     result.bytes[8] = (result.bytes[8] and 0x3F) or 0x80
 
 proc isNil*(self: Uuid): bool =
+  ## Determine if this UUID is "nil" (all 0s).
   for byte in self.bytes:
     if byte == 0: continue
     return false
@@ -57,6 +59,7 @@ proc `==`*(uuid1, uuid2: Uuid): bool {.inline.} =
   result = uuid1.bytes == uuid2.bytes
 
 proc bytes*(self: Uuid): array[16, uint8] {.inline.} =
+  ## Get the big-endian raw bytes of a UUID.
   result = self.bytes
 
 proc normalizeUuidStr(candidateStr: string): string =
@@ -67,6 +70,7 @@ proc normalizeUuidStr(candidateStr: string): string =
   result = uuidStr
 
 proc initUuid*(uuidStr: string): Uuid =
+  ## Parse a UUID from a string (with or without hyphens, any casing).
   let uuidStrClean = normalizeUuidStr(uuidStr)
 
   # idx is the index into the result's bytes array; it must be doubled
@@ -81,9 +85,11 @@ proc initUuid*(uuidStr: string): Uuid =
                           fmt"'{byteStr}' at index {2*idx}")
 
 proc initUuid*(uuidBytes: array[16, uint8]): Uuid =
+  ## Create a UUID directly from 16 bytes.
   result.bytes = uuidBytes
 
 proc variant*(self: Uuid): UuidVariant =
+  ## Determine the variant of the UUID. Most in the wild are RFC-4122.
   # borrowed tricks from CPython's uuid library
   let invByte = not self.bytes[8]
   if (invByte and 0x80) == 0x80:
@@ -95,6 +101,7 @@ proc variant*(self: Uuid): UuidVariant =
   return UuidVariant.ReservedFuture
 
 proc version*(self: Uuid): int =
+  ## Determine the version of an RFC-4122 UUID.
   if self.variant == UuidVariant.Rfc4122:
     result = int((self.bytes[6] and 0xF0) shr 4)
 
