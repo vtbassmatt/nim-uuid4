@@ -1,0 +1,23 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install Nim
+        uses: iffy/install-nim@fe613fe3cde877cc131ba15a67d2730dc1bcb592 #v4.0.2
+        with:
+          version: stable
+      - name: Run tests
+        run: |
+          nimble install -y
+          nimble test
+      - name: Generate docs
+        run: nim doc src/uuid4.nim
