@@ -10,16 +10,21 @@ runnableExamples:
   let u1 = uuid4()  # a version-4 (random) UUID
   echo u1           # print the stringified version of the UUID
 
+runnableExamples:
   let u2 = initUuid("b80b3380-a167-437b-9d64-6cb574e3aae7")
   echo u2.bytes[0]    # print the first byte of this UUID
   echo u2.bytes[15]   # print the last byte of this UUID
   echo u2.version     # this happens to be a version-4 UUID
   echo u2.variant     # it's a RFC-4122 UUID
 
-  let u3 = initUuid(u1.bytes)   # make another, equivalent UUID
-  echo u3 == u1                 # true
-  var u4: Uuid
-  echo u4.isNil                 # true
+runnableExamples:
+  let u3 = uuid4()
+  let u4 = initUuid(u3.bytes)   # make another, equivalent UUID
+  echo u4 == u3                 # true
+
+runnableExamples:
+  var u5: Uuid
+  echo u5.isNil   # true
 
 import std / [sysrand, strformat, strutils, parseutils, hashes]
 
