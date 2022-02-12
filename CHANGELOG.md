@@ -1,3 +1,7 @@
+# 0.9.3
+## Fixed
+- sys/sysrand was added in nim 1.6
+
 # 0.9.2
 ## Improved
 - More docs
